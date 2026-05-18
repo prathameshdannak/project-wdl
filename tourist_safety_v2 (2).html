@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SafeYatra - Tourist Safety System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Georgia, serif;
+      background-color: #f5f0e8;
+      color: #2c2c2c;
+    }
+
+    /* NAV */
+    nav {
+      background-color: #1a3a2a;
+      padding: 14px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    nav .logo { color: #f5c842; font-size: 22px; font-weight: bold; letter-spacing: 1px; }
+    nav ul { list-style: none; display: flex; gap: 8px; flex-wrap: wrap; }
+    nav ul li a {
+      color: #cde8d8; text-decoration: none; font-size: 13px;
+      padding: 6px 10px; border-radius: 4px; transition: background 0.2s;
+    }
+    nav ul li a:hover, nav ul li a.active {
+      background-color: #f5c842; color: #1a3a2a; font-weight: bold;
+    }
+
+    /* HERO */
+    .hero {
+      background-color: #1a3a2a;
+      color: white; text-align: center;
+      padding: 50px 20px 40px;
+    }
+    .hero h1 { font-size: 34px; color: #f5c842; margin-bottom: 12px; }
+    .hero p {
+      font-size: 15px; color: #cde8d8;
+      max-width: 600px; margin: 0 auto 24px; line-height: 1.7;
+    }
+    .hero .tagline {
+      display: inline-block;
+      background: rgba(245,200,66,0.15);
+      border: 1px solid #f5c842;
+      color: #f5c842;
+      font-size: 12px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+    }
+    .btn-hero {
+      background-color: #f5c842; color: #1a3a2a;
+      padding: 12px 26px; font-size: 14px; font-weight: bold;
+      border: none; border-radius: 6px; cursor: pointer;
+      margin: 6px; transition: opacity 0.2s;
+      font-family: Georgia, serif;
+    }
+    .btn-hero:hover { opacity: 0.85; }
+
+    /* INFO STRIP (no fake numbers — just feature highlights) */
+    .info-strip {
+      background-color: #2e5c3e;
+      display: flex; justify-content: center;
+      gap: 40px; padding: 16px; flex-wrap: wrap;
+    }
+    .info-item { text-align: center; color: white; }
+    .info-item .icon { font-size: 22px; margin-bottom: 4px; }
+    .info-item .lbl { font-size: 12px; color: #cde8d8; }
+
+    /* TAB MENU */
+    .tab-menu {
+      display: flex; justify-content: center;
+      background-color: #fff;
+      border-bottom: 3px solid #1a3a2a;
+      flex-wrap: wrap;
+    }
+    .tab-menu button {
+      padding: 13px 22px; border: none; background: none;
+      font-size: 13px; font-family: Georgia, serif;
+      cursor: pointer; color: #555;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px; transition: all 0.2s;
+    }
+    .tab-menu button:hover { color: #1a3a2a; }
+    .tab-menu button.active { color: #1a3a2a; font-weight: bold; border-bottom-color: #f5c842; }
+
+    /* TAB SECTIONS */
+    .tab-section { display: none; padding: 36px 20px; max-width: 900px; margin: 0 auto; }
+    .tab-section.active { display: block; }
+
+    .section-title {
+      font-size: 24px; color: #1a3a2a; margin-bottom: 6px;
+      border-left: 5px solid #f5c842; padding-left: 12px;
+    }
+    .section-desc { color: #666; font-size: 13px; margin-bottom: 24px; padding-left: 17px; line-height: 1.6; }
+
+    /* CARDS */
+    .card {
+      background: white; border: 1px solid #ddd;
+      border-radius: 8px; padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .card h3 { font-size: 16px; color: #1a3a2a; margin-bottom: 14px; }
+
+    /* INFO NOTE BOX */
+    .info-note {
+      background: #e8f4fd;
+      border: 1px solid #90caf9;
+      border-left: 4px solid #1565c0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #0d47a1;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .info-note strong { color: #0a2f6e; }
+
+    /* FORMS */
+    .form-row { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+    .form-group { display: flex; flex-direction: column; flex: 1; min-width: 190px; }
+    .form-group label { font-size: 12px; font-weight: bold; color: #444; margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 13px; font-family: Georgia, serif; outline: none; transition: border 0.2s;
+    }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1a3a2a; }
+
+    /* BUTTONS */
+    .btn {
+      padding: 10px 22px; border: none; border-radius: 6px;
+      font-size: 13px; font-family: Georgia, serif;
+      cursor: pointer; transition: opacity 0.2s; font-weight: bold;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-green { background-color: #1a3a2a; color: white; }
+    .btn-yellow { background-color: #f5c842; color: #1a3a2a; }
+    .btn-red { background-color: #c0392b; color: white; }
+    .btn-outline { background: white; border: 2px solid #1a3a2a; color: #1a3a2a; }
+    .btn-blue { background-color: #1565c0; color: white; }
+
+    /* ID CARD */
+    #id-output { display: none; }
+    .id-card {
+      background: linear-gradient(135deg, #1a3a2a, #2e5c3e);
+      color: white; border-radius: 12px; padding: 22px;
+      max-width: 400px; border: 3px solid #f5c842; position: relative;
+    }
+    .id-card .id-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px; border-bottom: 1px solid rgba(245,200,66,0.4); padding-bottom: 10px;
+    }
+    .id-card .id-title { font-size: 10px; color: #f5c842; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
+    .id-card .id-logo { font-size: 22px; }
+    .id-card .id-name { font-size: 20px; font-weight: bold; margin-bottom: 3px; color: #f5c842; }
+    .id-card .id-num { font-size: 12px; color: #aee8c4; margin-bottom: 14px; font-family: 'Courier New', monospace; }
+    .id-card .id-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .id-card .id-field label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #aee8c4; }
+    .id-card .id-field span { display: block; font-size: 13px; font-weight: bold; margin-top: 2px; }
+    .id-card .id-barcode {
+      height: 26px;
+      background: repeating-linear-gradient(90deg, white 0, white 2px, transparent 2px, transparent 6px);
+      border-radius: 3px; opacity: 0.6; margin-top: 10px;
+    }
+    .id-card .id-status {
+      position: absolute; top: 14px; right: 14px;
+      background: #27ae60; color: white; font-size: 9px; font-weight: bold;
+      padding: 3px 8px; border-radius: 10px;
+    }
+
+    /* INCIDENT ITEMS */
+    .incident-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 11px 13px; border: 1px solid #e8e8e8;
+      border-radius: 6px; margin-bottom: 9px; background: #fafafa;
+    }
+    .incident-item:hover { border-color: #1a3a2a; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+    .dot-red { background-color: #e74c3c; }
+    .dot-orange { background-color: #e67e22; }
+    .dot-yellow { background-color: #c9a800; }
+    .dot-green { background-color: #27ae60; }
+    .dot-blue { background-color: #1565c0; }
+    .incident-text .inc-title { font-size: 13px; font-weight: bold; color: #222; }
+    .incident-text .inc-meta { font-size: 11px; color: #888; margin-top: 2px; }
+    .badge { margin-left: auto; padding: 3px 9px; border-radius: 12px; font-size: 10px; font-weight: bold; white-space: nowrap; }
+    .badge-red { background: #fde8e8; color: #c0392b; }
+    .badge-orange { background: #fef0e0; color: #d35400; }
+    .badge-yellow { background: #fef9e0; color: #b8860b; }
+    .badge-green { background: #e8f8ee; color: #196f3d; }
+    .badge-blue { background: #e3f0ff; color: #1565c0; }
+
+    /* PROGRESS BARS */
+    .progress-item { margin-bottom: 14px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+    .progress-bar { height: 11px; background: #e0e0e0; border-radius: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 6px; transition: width 1s ease; }
+    .fill-red { background-color: #e74c3c; }
+    .fill-orange { background-color: #e67e22; }
+    .fill-yellow { background-color: #c9a800; }
+    .fill-green { background-color: #27ae60; }
+
+    /* LANGUAGE */
+    .lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 9px; margin-bottom: 20px; }
+    .lang-btn {
+      padding: 12px 8px; border: 2px solid #ddd; border-radius: 8px;
+      background: white; text-align: center; cursor: pointer; transition: all 0.2s;
+      font-family: Georgia, serif;
+    }
+    .lang-btn:hover { border-color: #1a3a2a; background: #f0f8f4; }
+    .lang-btn.active { border-color: #f5c842; background: #fffbe6; }
+    .lang-btn .lang-name { font-size: 12px; font-weight: bold; color: #1a3a2a; }
+    .lang-btn .lang-native { font-size: 14px; color: #444; margin-top: 2px; }
+    .translation-box { background: #f0f8f4; border: 1px solid #1a3a2a; border-radius: 8px; padding: 18px; }
+    .translation-box h4 { color: #1a3a2a; font-size: 15px; margin-bottom: 12px; }
+    .phrase-row { display: flex; gap: 14px; padding: 7px 0; border-bottom: 1px dashed #ccc; align-items: center; }
+    .phrase-row:last-child { border: none; }
+    .phrase-en { color: #888; font-size: 12px; width: 150px; flex-shrink: 0; }
+    .phrase-translated { font-size: 14px; color: #1a3a2a; font-weight: bold; }
+
+    /* DASHBOARD METRICS — No numbers, just status */
+    .metrics-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 12px; margin-bottom: 20px; }
+    .metric-box {
+      background: white; border: 1px solid #ddd; border-radius: 8px;
+      padding: 16px; text-align: center;
+      border-top: 4px solid #1a3a2a;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .metric-box .m-icon { font-size: 28px; margin-bottom: 6px; }
+    .metric-box .m-label { font-size: 12px; color: #555; margin-top: 4px; }
+    .metric-box .m-status { font-size: 14px; font-weight: bold; color: #1a3a2a; }
+    .metric-box.red-top { border-top-color: #e74c3c; }
+    .metric-box.red-top .m-status { color: #e74c3c; }
+    .metric-box.yellow-top { border-top-color: #c9a800; }
+    .metric-box.yellow-top .m-status { color: #c9a800; }
+    .metric-box.blue-top { border-top-color: #1565c0; }
+    .metric-box.blue-top .m-status { color: #1565c0; }
+
+    /* ALERT BANNER */
+    .alert-banner {
+      background: #fff3cd; border: 1px solid #ffc107;
+      border-left: 4px solid #ffc107; border-radius: 6px;
+      padding: 11px 14px; margin-bottom: 18px;
+      font-size: 13px; color: #856404;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .alert-banner button {
+      background: #ffc107; border: none; padding: 5px 12px;
+      border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; color: #1a1a1a;
+    }
+
+    /* SAFETY TIPS */
+    .tip-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 11px 0; border-bottom: 1px solid #eee;
+    }
+    .tip-item:last-child { border: none; }
+    .tip-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .tip-text strong { font-size: 13px; display: block; color: #1a3a2a; margin-bottom: 2px; }
+    .tip-text span { font-size: 12px; color: #666; line-height: 1.5; }
+
+    /* COMPLAINT FORM */
+    .complaint-status { display: none; }
+    .complaint-status.show { display: block; }
+
+    /* HELPLINE TABLE */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table th {
+      background: #1a3a2a; color: #f5c842;
+      padding: 10px 12px; text-align: left; font-size: 12px;
+    }
+    table td { padding: 10px 12px; border-bottom: 1px solid #e8e8e8; }
+    table tr:last-child td { border: none; }
+    table tr:hover td { background: #f5f0e8; }
+    table td strong { color: #1a3a2a; }
+
+    /* SOS BOX */
+    .sos-box {
+      background-color: #c0392b; color: white; text-align: center;
+      padding: 16px; border-radius: 8px; margin-bottom: 18px;
+      cursor: pointer; font-size: 17px; font-weight: bold; letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+    .sos-box:hover { opacity: 0.88; }
+
+    /* TOAST */
+    #toast {
+      position: fixed; bottom: 22px; right: 22px;
+      background: #1a3a2a; color: white;
+      padding: 11px 18px; border-radius: 6px; font-size: 13px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      display: none; z-index: 999; border-left: 4px solid #f5c842;
+    }
+
+    /* GOVT SOURCE TAG */
+    .source-tag {
+      font-size: 11px; color: #555;
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 3px 9px; border-radius: 4px;
+      display: inline-block; margin-bottom: 14px;
+    }
+    .source-tag a { color: #1565c0; text-decoration: none; }
+    .source-tag a:hover { text-decoration: underline; }
+
+    /* FOOTER */
+    footer {
+      background-color: #1a3a2a; color: #cde8d8;
+      text-align: center; padding: 26px 20px;
+      margin-top: 40px; font-size: 13px; line-height: 1.9;
+    }
+    footer strong { color: #f5c842; }
+
+    /* TWO-COL GRID */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) {
+      .two-col { grid-template-columns: 1fr; }
+      nav ul { gap: 4px; }
+      .hero h1 { font-size: 24px; }
+    }
+
+    /* ===== EXPLORE MORE SECTION ===== */
+    #tab-explore {
+      padding: 36px 20px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Heritage destination cards */
+    .explore-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .explore-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .explore-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.14);
+    }
+
+    .explore-card-img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.92);
+      transition: filter 0.3s;
+    }
+
+    .explore-card:hover .explore-card-img { filter: brightness(1.02); }
+
+    .explore-card-body { padding: 14px 16px 16px; }
+
+    .explore-card-category {
+      display: inline-block;
+      background: #f5c842;
+      color: #1a3a2a;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 9px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .explore-card-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a3a2a;
+      margin-bottom: 4px;
+    }
+
+    .explore-card-location {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .explore-card-desc {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .explore-card-btn {
+      display: inline-block;
+      background: #1a3a2a;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 7px 16px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-family: Georgia, serif;
+      transition: background 0.2s;
+    }
+
+    .explore-card-btn:hover { background: #2e5c3e; }
+
+    /* ---- MODAL ---- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: white;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 880px;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      animation: modalIn 0.25s ease;
+    }
+
+    @keyframes modalIn {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+
+    .modal-top {
+      position: relative;
+      height: 220px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .modal-top img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.6);
+    }
+
+    .modal-top-text {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 18px 22px 16px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    }
+
+    .modal-top-text h2 {
+      font-size: 22px;
+      color: #f5c842;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .modal-top-text p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 14px;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: white;
+      font-size: 18px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover { background: #c0392b; }
+
+    .modal-body {
+      padding: 22px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-info-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .modal-info-chip {
+      background: #f5f0e8;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 13px;
+      font-size: 12px;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .modal-info-chip strong {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #1a3a2a;
+      margin-bottom: 2px;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+
+    .modal-highlights {
+      background: #f5f0e8;
+      border-left: 4px solid #f5c842;
+      border-radius: 0 6px 6px 0;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .modal-highlights h4 {
+      font-size: 13px;
+      font-weight: bold;
+      color: #1a3a2a;
+      margin-bottom: 8px;
+    }
+
+    .modal-highlights ul {
+      padding-left: 16px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.9;
+    }
+
+    .modal-safety-tip {
+      background: #e8f8ee;
+      border: 1px solid #b2dfdb;
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #1a5234;
+      line-height: 1.6;
+    }
+
+    .modal-safety-tip strong { color: #0d3320; }
+
+    /* Maharashtra index modal */
+    .mh-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mh-mini-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+
+    .mh-mini-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.14); }
+
+    .mh-mini-card img {
+      width: 100%; height: 110px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.88);
+    }
+
+    .mh-mini-card-body { padding: 10px 12px; }
+    .mh-mini-card-body strong { font-size: 13px; color: #1a3a2a; display: block; margin-bottom: 2px; }
+    .mh-mini-card-body span { font-size: 11px; color: #888; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">🛡️ SafeYatra</div>
+  <ul>
+    <li><a href="#" class="active" onclick="showTab('tourist-id',this)">Tourist ID</a></li>
+    <li><a href="#" onclick="showTab('anomaly',this)">AI Monitor</a></li>
+    <li><a href="#" onclick="showTab('language',this)">Languages</a></li>
+    <li><a href="#" onclick="showTab('safety-tips',this)">Safety Tips</a></li>
+    <li><a href="#" onclick="showTab('complaint',this)">Complaint</a></li>
+    <li><a href="#" onclick="showTab('helplines',this)">Helplines</a></li>
+    <li><a href="#" onclick="showTab('dashboard',this)">Dashboard</a></li>
+    <li><a href="#" onclick="showTab('explore',this)">Explore More</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="tagline">🇮🇳 Proposed System · Ministry of Tourism, Govt. of India</div>
+  <h1>Smart Tourist Safety & Incident Response System</h1>
+  <p>A proposed digital platform to register tourists, detect safety incidents using AI, provide multilingual emergency help, and enable fast police response across India.</p>
+  <button class="btn-hero" onclick="showTab('tourist-id')">📋 Register as Tourist</button>
+  <button class="btn-hero" onclick="showTab('helplines')">📞 Emergency Helplines</button>
+  <button class="btn-hero" onclick="showTab('complaint')">📝 File a Complaint</button>
+</div>
+
+<!-- INFO STRIP — features only, no fake numbers -->
+<div class="info-strip">
+  <div class="info-item"><div class="icon">🪪</div><div class="lbl">Digital Tourist ID</div></div>
+  <div class="info-item"><div class="icon">🤖</div><div class="lbl">AI Anomaly Detection</div></div>
+  <div class="info-item"><div class="icon">🌐</div><div class="lbl">22 Indian Languages</div></div>
+  <div class="info-item"><div class="icon">🆘</div><div class="lbl">One-Tap SOS Alert</div></div>
+  <div class="info-item"><div class="icon">📋</div><div class="lbl">Online Complaint Filing</div></div>
+  <div class="info-item"><div class="icon">📞</div><div class="lbl">All Helplines in One Place</div></div>
+</div>
+
+<!-- TAB MENU -->
+<div class="tab-menu">
+  <button class="active" onclick="showTab('tourist-id',this)">🪪 Tourist ID</button>
+  <button onclick="showTab('anomaly',this)">🤖 AI Monitor</button>
+  <button onclick="showTab('language',this)">🌐 Languages</button>
+  <button onclick="showTab('safety-tips',this)">💡 Safety Tips</button>
+  <button onclick="showTab('complaint',this)">📝 Complaint</button>
+  <button onclick="showTab('helplines',this)">📞 Helplines</button>
+  <button onclick="showTab('dashboard',this)">📊 Dashboard</button>
+  <button onclick="showTab('explore',this)">🗺️ Explore More</button>
+</div>
+
+
+<!-- ===== 1. TOURIST ID TAB ===== -->
+<div id="tab-tourist-id" class="tab-section active">
+  <h2 class="section-title">Digital Tourist ID Generation</h2>
+  <p class="section-desc">Fill in your details to receive a unique Digital Tourist ID. This ID can be shown at checkpoints, used for emergency identification, and shared with authorities if needed.</p>
+
+  <div class="info-note">
+    ℹ️ <strong>Note:</strong> This is a prototype system. In the actual deployed version, this ID would be stored securely in a government database linked to your Aadhaar / Passport number for identity verification.
+  </div>
+
+  <div class="card">
+    <h3>📋 Tourist Registration Form</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Ravi Kumar">
+      </div>
+      <div class="form-group">
+        <label>Phone Number *</label>
+        <input type="tel" id="f-phone" placeholder="e.g. +91 98765 43210">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>City to Visit *</label>
+        <select id="f-city">
+          <option value="">-- Select City --</option>
+          <option>Agra</option><option>Jaipur</option><option>Varanasi</option>
+          <option>Delhi</option><option>Mumbai</option><option>Goa</option>
+          <option>Udaipur</option><option>Mysuru</option><option>Amritsar</option>
+          <option>Leh</option><option>Rishikesh</option><option>Chennai</option>
+          <option>Kolkata</option><option>Hampi</option><option>Darjeeling</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nationality</label>
+        <select id="f-nationality">
+          <option>Indian</option>
+          <option>International</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Visit Duration</label>
+        <select id="f-duration">
+          <option>1–3 Days</option>
+          <option>4–7 Days</option>
+          <option>1–2 Weeks</option>
+          <option>1 Month+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Emergency Contact Number</label>
+        <input type="tel" id="f-emergency" placeholder="e.g. family member's number">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Preferred Language</label>
+        <select id="f-lang">
+          <option>English</option><option>Hindi</option><option>Bengali</option>
+          <option>Telugu</option><option>Marathi</option><option>Tamil</option>
+          <option>Gujarati</option><option>Kannada</option><option>Malayalam</option>
+          <option>Punjabi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Travel Group Size</label>
+        <select id="f-group">
+          <option>Solo</option>
+          <option>2 People</option>
+          <option>3–5 People</option>
+          <option>6+ People</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-green" onclick="generateID()">🪪 Generate My Tourist ID</button>
+  </div>
+
+  <!-- ID Card Output -->
+  <div id="id-output">
+    <div class="card">
+      <h3>✅ Your Tourist ID Card</h3>
+      <div class="id-card">
+        <div class="id-status">ACTIVE</div>
+        <div class="id-header">
+          <div>
+            <div class="id-title">🇮🇳 Government of India</div>
+            <div class="id-title" style="margin-top:3px;">SafeYatra — Tourist Safety ID</div>
+          </div>
+          <div class="id-logo">🛡️</div>
+        </div>
+        <div class="id-name" id="id-name">—</div>
+        <div class="id-num" id="id-num">SY-XXXX-XXXX</div>
+        <div class="id-details">
+          <div class="id-field"><label>Destination</label><span id="id-city">—</span></div>
+          <div class="id-field"><label>Phone</label><span id="id-phone">—</span></div>
+          <div class="id-field"><label>Issued On</label><span id="id-issued">—</span></div>
+          <div class="id-field"><label>Duration</label><span id="id-dur">—</span></div>
+          <div class="id-field"><label>Language</label><span id="id-lang">—</span></div>
+          <div class="id-field"><label>Group Size</label><span id="id-group">—</span></div>
+        </div>
+        <div class="id-barcode"></div>
+      </div>
+      <br>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-yellow" onclick="showToast('📥 Downloading Tourist ID as PDF...')">📥 Download ID</button>
+        <button class="btn btn-outline" onclick="showToast('📤 ID details sent via SMS to emergency contact!')">📤 Share via SMS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOS -->
+  <div class="sos-box" onclick="triggerSOS()">
+    🆘 EMERGENCY SOS — Click Here to Alert Nearest Police Station
+  </div>
+</div>
+
+
+<!-- ===== 2. AI MONITOR TAB ===== -->
+<div id="tab-anomaly" class="tab-section">
+  <h2 class="section-title">AI Anomaly Detection Monitor</h2>
+  <p class="section-desc">This module shows how the system would use AI to detect risks at tourist locations. The threat levels shown are <strong>simulated estimates</strong> based on publicly available government data and reports.</p>
+
+  <!-- Government Source Reference -->
+  <div class="info-note">
+    📊 <strong>Data Reference:</strong> Crowd risk levels shown below are estimated based on:
+    <ul style="margin-top:6px; padding-left:18px; line-height:1.9;">
+      <li><strong>NCRB (National Crime Records Bureau)</strong> — Annual tourist area crime statistics</li>
+      <li><strong>Ministry of Tourism Annual Reports</strong> — Footfall data at monument sites (e.g., ASI reports for Taj Mahal: ~70,000–80,000 visitors/day in peak season)</li>
+      <li><strong>Archaeological Survey of India (ASI)</strong> — Entry logs of protected monuments</li>
+      <li><strong>State Tourism Police data</strong> — Incident reports from Rajasthan, UP, Goa tourism police</li>
+    </ul>
+    In the deployed system, this data would come from live CCTV feeds, IoT sensors, and real-time police reports.
+  </div>
+
+  <div class="card">
+    <h3>⚠️ Estimated Risk Levels — Popular Tourist Zones</h3>
+    <div class="source-tag">Source: Ministry of Tourism Annual Report 2022–23 · ASI Monument Footfall Data</div>
+    <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+      <button class="btn btn-outline" style="font-size:12px;" onclick="refreshThreats()">↻ Simulate Refresh</button>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Crowd Density (Taj Mahal, Agra — Peak Season)</span>
+        <span id="lbl-crowd">High — 78%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-orange" id="bar-crowd" style="width:78%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Based on ASI data: ~70,000+ daily visitors in Oct–Mar season</div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Anomalous Behaviour (Jaipur Fort Area)</span>
+        <span id="lbl-behavior">Moderate — 55%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-yellow" id="bar-behavior" style="width:55%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Based on Rajasthan Tourism Police incident reports 2022–23</div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Theft / Pickpocket Risk (Goa Beach Zones)</span>
+        <span id="lbl-theft">Medium — 52%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-yellow" id="bar-theft" style="width:52%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Based on Goa Police tourist crime data & NCRB 2022 report</div>
+    </div>
+
+    <div class="progress-item">
+      <div class="progress-label">
+        <span>Road Safety Risk (Leh–Manali Highway)</span>
+        <span id="lbl-road">High — 70%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-orange" id="bar-road" style="width:70%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Based on MoRTH (Ministry of Road Transport) accident data for mountain highways</div>
+    </div>
+
+    <div class="progress-item" style="margin-bottom:0">
+      <div class="progress-label">
+        <span>Medical Emergency Risk (Rishikesh Adventure Zone)</span>
+        <span id="lbl-medical">Low — 30%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-green" id="bar-medical" style="width:30%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Based on Uttarakhand Tourism safety incident records</div>
+    </div>
+  </div>
+
+  <!-- Sample Incident Feed -->
+  <div class="card">
+    <h3>🤖 Sample AI-Detected Incidents (Simulated)</h3>
+    <div class="info-note" style="font-size:12px; margin-bottom:12px;">
+      These are <strong>example incidents</strong> to demonstrate how the system would display real alerts once deployed with live CCTV and sensor data.
+    </div>
+    <div class="incident-item">
+      <div class="dot dot-orange"></div>
+      <div class="incident-text">
+        <div class="inc-title">Unusual Crowd Build-up Detected</div>
+        <div class="inc-meta">📍 Taj Mahal East Gate · Detected by: Computer Vision AI · Action: Alert sent to security</div>
+      </div>
+      <span class="badge badge-orange">SIMULATED</span>
+    </div>
+    <div class="incident-item">
+      <div class="dot dot-yellow"></div>
+      <div class="incident-text">
+        <div class="inc-title">Tourist Reported as Lost</div>
+        <div class="inc-meta">📍 Hawa Mahal, Jaipur · Detected by: SOS Button trigger · Action: Nearest police notified</div>
+      </div>
+      <span class="badge badge-yellow">SIMULATED</span>
+    </div>
+    <div class="incident-item">
+      <div class="dot dot-blue"></div>
+      <div class="incident-text">
+        <div class="inc-title">Medical Help Request Received</div>
+        <div class="inc-meta">📍 Rishikesh Rafting Zone · Detected by: Tourist App SOS · Action: Ambulance dispatched</div>
+      </div>
+      <span class="badge badge-blue">SIMULATED</span>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:14px;">
+    <div class="card" style="margin:0;">
+      <h3>👁️ Computer Vision</h3>
+      <p style="font-size:12px; color:#555; line-height:1.6;">In the deployed system, CCTV cameras at monument gates would feed into an AI model to detect crowd surges, identify missing persons, and flag unusual activity.</p>
+    </div>
+    <div class="card" style="margin:0;">
+      <h3>📊 Predictive Risk Model</h3>
+      <p style="font-size:12px; color:#555; line-height:1.6;">A machine learning model trained on NCRB and ASI historical data to predict which tourist spots are likely to have high risk on a given day.</p>
+    </div>
+    <div class="card" style="margin:0;">
+      <h3>📱 SOS-Based Detection</h3>
+      <p style="font-size:12px; color:#555; line-height:1.6;">When a tourist presses the SOS button on this app, their GPS location and Tourist ID are instantly sent to the nearest police station control room.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== 3. LANGUAGE TAB ===== -->
+<div id="tab-language" class="tab-section">
+  <h2 class="section-title">Multilingual Emergency Support</h2>
+  <p class="section-desc">Select your language to view emergency phrases. This feature helps tourists who do not speak the local language to communicate with police, doctors, or locals during an emergency.</p>
+
+  <div class="lang-grid" id="lang-grid"></div>
+
+  <div class="translation-box" id="trans-box">
+    <h4 id="trans-title">👆 Click on a language above to see emergency phrases</h4>
+    <div id="trans-phrases">
+      <p style="color:#888; font-size:13px;">Emergency phrases will appear here.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== 4. SAFETY TIPS TAB (NEW) ===== -->
+<div id="tab-safety-tips" class="tab-section">
+  <h2 class="section-title">Tourist Safety Tips</h2>
+  <p class="section-desc">Important safety advice for tourists visiting India, based on guidelines from the Ministry of Tourism and state tourism departments.</p>
+
+  <div class="card">
+    <h3>📌 General Safety Tips</h3>
+    <div class="tip-item">
+      <div class="tip-icon">🪪</div>
+      <div class="tip-text">
+        <strong>Always carry your Tourist ID</strong>
+        <span>Keep your SafeYatra Tourist ID with you at all times. It helps police identify and assist you quickly during an emergency.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">📞</div>
+      <div class="tip-text">
+        <strong>Save emergency numbers</strong>
+        <span>Save 100 (Police), 108 (Ambulance), 1363 (Tourist Helpline) in your phone before you travel.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">👜</div>
+      <div class="tip-text">
+        <strong>Beware of pickpockets in crowded areas</strong>
+        <span>Keep your wallet in your front pocket at busy markets, bus stands, and railway stations. Use a money belt for valuables.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🌅</div>
+      <div class="tip-text">
+        <strong>Avoid isolated areas after dark</strong>
+        <span>Stick to well-lit, populated areas at night. Avoid unfamiliar lanes and beaches after sunset without company.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🚕</div>
+      <div class="tip-text">
+        <strong>Use only licensed transport</strong>
+        <span>Use government-approved taxis, auto-rickshaws with meter, or registered apps (Ola, Uber). Avoid accepting rides from unknown strangers.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">💊</div>
+      <div class="tip-text">
+        <strong>Carry a basic first-aid kit</strong>
+        <span>Especially important for adventure tourism areas (Rishikesh, Leh, Manali). Include ORS packets, antiseptic, and any personal medicines.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">📍</div>
+      <div class="tip-text">
+        <strong>Share your itinerary with someone</strong>
+        <span>Always inform a family member or hotel staff about your daily travel plan, especially if visiting remote locations.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">💧</div>
+      <div class="tip-text">
+        <strong>Drink only packaged or boiled water</strong>
+        <span>Avoid tap water in unfamiliar places. Buy sealed packaged water from reputed brands to prevent water-borne illness.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>👩 Safety Tips for Women Tourists</h3>
+    <div class="tip-item">
+      <div class="tip-icon">👮‍♀️</div>
+      <div class="tip-text">
+        <strong>Know the Women Helpline number: 1091</strong>
+        <span>Dial 1091 (Women Helpline) or 112 (Emergency) immediately if you feel unsafe. Most states have dedicated women tourist police.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🏨</div>
+      <div class="tip-text">
+        <strong>Stay in government-approved hotels</strong>
+        <span>Choose hotels listed on the Ministry of Tourism website. Inform the front desk of your solo travel status.</span>
+      </div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🧣</div>
+      <div class="tip-text">
+        <strong>Dress modestly at religious sites</strong>
+        <span>Cover shoulders and legs when visiting temples, mosques, or churches. Carry a scarf or dupatta to avoid unwanted attention.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== 5. COMPLAINT TAB (NEW) ===== -->
+<div id="tab-complaint" class="tab-section">
+  <h2 class="section-title">File a Complaint or Report an Incident</h2>
+  <p class="section-desc">Use this form to report a safety incident, harassment, theft, or any problem you faced during your visit. Your complaint will be forwarded to the concerned police station and tourism department.</p>
+
+  <div class="info-note">
+    ℹ️ In the deployed system, this form would submit directly to the state's Tourism Police Control Room and generate a complaint reference number. Currently, this is a prototype form.
+  </div>
+
+  <div class="card">
+    <h3>📝 Incident / Complaint Form</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Tourist ID (if generated)</label>
+        <input type="text" id="c-id" placeholder="e.g. SY-1234-5678">
+      </div>
+      <div class="form-group">
+        <label>Your Name *</label>
+        <input type="text" id="c-name" placeholder="Full name">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone Number *</label>
+        <input type="tel" id="c-phone" placeholder="+91 XXXXX XXXXX">
+      </div>
+      <div class="form-group">
+        <label>City / Location of Incident *</label>
+        <input type="text" id="c-location" placeholder="e.g. Near Taj Mahal, Agra">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type of Incident *</label>
+        <select id="c-type">
+          <option value="">-- Select --</option>
+          <option>Theft / Pickpocketing</option>
+          <option>Harassment / Eve Teasing</option>
+          <option>Scam / Fraud by Local</option>
+          <option>Lost / Unable to find way</option>
+          <option>Medical Emergency</option>
+          <option>Road Accident</option>
+          <option>Overcharging by Vendor</option>
+          <option>Missing Person</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date & Time of Incident</label>
+        <input type="datetime-local" id="c-time">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2;">
+        <label>Describe What Happened *</label>
+        <textarea id="c-desc" placeholder="Write a brief description of the incident..."></textarea>
+      </div>
+    </div>
+    <button class="btn btn-red" onclick="submitComplaint()">📤 Submit Complaint</button>
+  </div>
+
+  <!-- Success message -->
+  <div id="complaint-success" class="complaint-status">
+    <div class="card" style="border-left: 4px solid #27ae60; background:#f0fff5;">
+      <h3 style="color:#196f3d;">✅ Complaint Submitted Successfully</h3>
+      <p style="font-size:13px; color:#333; line-height:1.7; margin-top:6px;">
+        Your complaint reference number is <strong id="complaint-ref"></strong>.<br>
+        It has been forwarded to the concerned police station and Tourism Department.<br>
+        You will receive an SMS update on your registered phone number within 24 hours.<br><br>
+        <strong>For urgent help, please also call: 100 (Police) or 1363 (Tourist Helpline)</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== 6. HELPLINES TAB (NEW) ===== -->
+<div id="tab-helplines" class="tab-section">
+  <h2 class="section-title">Emergency Helplines & Contacts</h2>
+  <p class="section-desc">All important emergency numbers and contacts at one place. Save these numbers in your phone before you travel.</p>
+
+  <div class="card">
+    <h3>🚨 National Emergency Numbers</h3>
+    <table>
+      <tr><th>Service</th><th>Number</th><th>Available</th></tr>
+      <tr><td>🚔 Police</td><td><strong>100</strong></td><td>24 × 7</td></tr>
+      <tr><td>🚒 Fire Brigade</td><td><strong>101</strong></td><td>24 × 7</td></tr>
+      <tr><td>🚑 Ambulance</td><td><strong>108</strong></td><td>24 × 7</td></tr>
+      <tr><td>🆘 National Emergency</td><td><strong>112</strong></td><td>24 × 7</td></tr>
+      <tr><td>👩 Women Helpline</td><td><strong>1091</strong></td><td>24 × 7</td></tr>
+      <tr><td>🧒 Child Helpline</td><td><strong>1098</strong></td><td>24 × 7</td></tr>
+      <tr><td>🏥 Medical Helpline</td><td><strong>104</strong></td><td>24 × 7</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>🏛️ Tourism Specific Helplines</h3>
+    <table>
+      <tr><th>Service</th><th>Number / Contact</th><th>Notes</th></tr>
+      <tr><td>🌐 India Tourist Helpline</td><td><strong>1800-11-1363</strong></td><td>Toll-free, 24 × 7, Multilingual</td></tr>
+      <tr><td>🏛️ Incredible India Helpline</td><td><strong>1363</strong></td><td>Ministry of Tourism</td></tr>
+      <tr><td>🚂 Railway Helpline</td><td><strong>139</strong></td><td>For train-related issues</td></tr>
+      <tr><td>✈️ Airport Authority</td><td><strong>1800-111-468</strong></td><td>Toll-free</td></tr>
+      <tr><td>💳 Bank Fraud / Card Block</td><td><strong>1930</strong></td><td>Cyber Crime</td></tr>
+      <tr><td>🏪 Consumer Complaint</td><td><strong>1800-11-4000</strong></td><td>For overcharging etc.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>📍 State Tourism Police Contacts</h3>
+    <table>
+      <tr><th>State</th><th>Tourist Police Helpline</th></tr>
+      <tr><td>Rajasthan (Jaipur, Udaipur)</td><td><strong>0141-2744999</strong></td></tr>
+      <tr><td>Uttar Pradesh (Agra, Varanasi)</td><td><strong>1800-180-0151</strong></td></tr>
+      <tr><td>Goa</td><td><strong>0832-2423400</strong></td></tr>
+      <tr><td>Delhi</td><td><strong>011-23748400</strong></td></tr>
+      <tr><td>Maharashtra (Mumbai)</td><td><strong>1800-22-0110</strong></td></tr>
+      <tr><td>Kerala</td><td><strong>0471-2321132</strong></td></tr>
+      <tr><td>Himachal Pradesh (Manali, Shimla)</td><td><strong>1800-180-8090</strong></td></tr>
+    </table>
+    <p style="font-size:11px; color:#888; margin-top:10px;">Source: Ministry of Tourism, Government of India — incredibleindia.org</p>
+  </div>
+
+  <div class="sos-box" onclick="triggerSOS()">
+    🆘 EMERGENCY SOS — Click Here to Alert Nearest Police Station
+  </div>
+</div>
+
+
+<!-- ===== 7. DASHBOARD TAB ===== -->
+<div id="tab-dashboard" class="tab-section">
+  <h2 class="section-title">Police & Tourism Department Dashboard</h2>
+  <p class="section-desc">This dashboard would be used by police officers and tourism department staff to monitor and respond to tourist safety incidents in real time. Currently shown as a prototype with no live data.</p>
+
+  <div class="info-note">
+    ℹ️ <strong>Prototype View:</strong> This dashboard is newly set up and has <strong>no registered tourists or live incidents yet</strong>. Once the system goes live and tourists start registering, all statistics and incident logs will appear here automatically.
+  </div>
+
+  <!-- Status Cards — no fake numbers -->
+  <div class="metrics-row">
+    <div class="metric-box">
+      <div class="m-icon">👥</div>
+      <div class="m-status">—</div>
+      <div class="m-label">Tourists Registered<br><small style="color:#aaa;">(None yet — system is new)</small></div>
+    </div>
+    <div class="metric-box red-top">
+      <div class="m-icon">🚨</div>
+      <div class="m-status">—</div>
+      <div class="m-label">Open Incidents<br><small style="color:#aaa;">(No data yet)</small></div>
+    </div>
+    <div class="metric-box yellow-top">
+      <div class="m-icon">🆘</div>
+      <div class="m-status" id="m-sos">0</div>
+      <div class="m-label">SOS Alerts Today<br><small style="color:#aaa;">(Updates on SOS click)</small></div>
+    </div>
+    <div class="metric-box blue-top">
+      <div class="m-icon">📋</div>
+      <div class="m-status" id="m-complaints">0</div>
+      <div class="m-label">Complaints Filed<br><small style="color:#aaa;">(Updates on submission)</small></div>
+    </div>
+  </div>
+
+  <!-- Incident log — empty state -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+      <h3 style="margin:0;">📋 Incident Log</h3>
+      <button class="btn btn-outline" style="font-size:12px;" onclick="showToast('No data to export yet — system is new.')">📥 Export Report</button>
+    </div>
+    <div id="incident-log-container">
+      <div style="text-align:center; padding: 30px 0; color:#aaa;">
+        <div style="font-size:36px; margin-bottom:10px;">📭</div>
+        <div style="font-size:14px;">No incidents logged yet.</div>
+        <div style="font-size:12px; margin-top:4px;">Incidents will appear here once tourists start using the system and filing complaints or SOS alerts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card">
+    <h3>⚡ Quick Actions (Officer Controls)</h3>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-red" onclick="showToast('⚠️ Feature active only in deployed version with verified officer login.')">📢 Broadcast Alert</button>
+      <button class="btn btn-green" onclick="showToast('⚠️ Feature active only in deployed version with verified officer login.')">🚔 Dispatch Team</button>
+      <button class="btn btn-blue" onclick="showTab('complaint')">📋 View Complaints</button>
+      <button class="btn btn-outline" onclick="showToast('⚠️ No data yet — report will be available after first registration.')">📊 Generate Report</button>
+      <button class="btn btn-outline" onclick="showTab('helplines')">📞 View Helplines</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>ℹ️ About This System</h3>
+    <p style="font-size:13px; color:#555; line-height:1.8;">
+      <strong>SafeYatra</strong> is a proposed Smart Tourist Safety & Incident Response System designed as an engineering project.<br><br>
+      <strong>Proposed integrations (for future development):</strong>
+    </p>
+    <ul style="font-size:13px; color:#555; line-height:1.9; padding-left:18px; margin-top:8px;">
+      <li>Integration with <strong>Aadhaar / DigiLocker</strong> for tourist identity verification</li>
+      <li>Real-time CCTV feed from <strong>ASI (Archaeological Survey of India)</strong> monument cameras</li>
+      <li>Live data feed from <strong>NCRB crime database</strong></li>
+      <li>API connection with <strong>State Police Control Rooms</strong></li>
+      <li>GPS tracking via tourist's mobile number using <strong>DoT TRAI APIs</strong></li>
+      <li>Integration with <strong>National Disaster Management Authority (NDMA)</strong> for disaster alerts</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ===== 8. EXPLORE MORE TAB ===== -->
+<div id="tab-explore" class="tab-section">
+  <h2 class="section-title">🗺️ Explore More — Maharashtra Heritage</h2>
+  <p class="section-desc">Planning a trip to Maharashtra? Here are five iconic destinations worth visiting — with safety tips for each location to help you travel smart.</p>
+
+  <div class="info-note">
+    🛡️ <strong>SafeYatra Tip:</strong> Before visiting any of these places, generate your <strong>Tourist ID</strong> from the first tab and save the local helpline numbers. Each destination below also includes a safety note specific to that location.
+  </div>
+
+  <!-- Heritage index card (full collection) -->
+  <div class="card" style="border-left: 4px solid #f5c842; cursor: pointer;" onclick="openModal('mh-index')">
+    <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Ellora_cave_16_Kailasha_temple.jpg/400px-Ellora_cave_16_Kailasha_temple.jpg"
+           style="width:90px; height:70px; object-fit:cover; border-radius:6px; flex-shrink:0;" alt="Maharashtra Heritage">
+      <div>
+        <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:4px;">Complete Collection</div>
+        <div style="font-size:17px; font-weight:bold; color:#1a3a2a; margin-bottom:3px;">Maharashtra Heritage — 5 Iconic Destinations</div>
+        <div style="font-size:12px; color:#666;">Hazur Sahib · Ajanta & Ellora · Shaniwar Wada · Gateway of India · Alibag</div>
+      </div>
+      <div style="margin-left:auto; font-size:22px; color:#f5c842;">→</div>
+    </div>
+  </div>
+
+  <!-- Individual destination cards -->
+  <div class="explore-grid">
+
+    <!-- Hazur Sahib -->
+    <div class="explore-card" onclick="openModal('hazur')">
+      <img class="explore-card-img"
+           src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Hazur_Sahib_Gurudwara%2C_Nanded.jpg/800px-Hazur_Sahib_Gurudwara%2C_Nanded.jpg"
+           alt="Hazur Sahib Nanded">
+      <div class="explore-card-body">
+        <span class="explore-card-category">Sacred Site</span>
+        <div class="explore-card-title">Sachkhand Sri Hazur Sahib</div>
+        <div class="explore-card-location">📍 Nanded, Maharashtra</div>
+        <div class="explore-card-desc">One of the five Takhts of Sikhism — the golden-domed shrine where Guru Gobind Singh Ji attained Sachkhand in 1708.</div>
+        <button class="explore-card-btn">View Details</button>
+      </div>
+    </div>
+
+    <!-- Ajanta & Ellora -->
+    <div class="explore-card" onclick="openModal('ajanta')">
+      <img class="explore-card-img"
+           src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Ellora_cave_16_Kailasha_temple.jpg/800px-Ellora_cave_16_Kailasha_temple.jpg"
+           alt="Ajanta Ellora Caves">
+      <div class="explore-card-body">
+        <span class="explore-card-category">UNESCO Heritage</span>
+        <div class="explore-card-title">Ajanta & Ellora Caves</div>
+        <div class="explore-card-location">📍 Aurangabad District, Maharashtra</div>
+        <div class="explore-card-desc">Ancient rock-cut Buddhist, Hindu and Jain caves — including the awe-inspiring Kailasa Temple, carved from a single rock.</div>
+        <button class="explore-card-btn">View Details</button>
+      </div>
+    </div>
+
+    <!-- Shaniwar Wada -->
+    <div class="explore-card" onclick="openModal('shaniwar')">
+      <img class="explore-card-img"
+           src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Shaniwar_Wada_Fort_%281%29.jpg/800px-Shaniwar_Wada_Fort_%281%29.jpg"
+           alt="Shaniwar Wada Pune">
+      <div class="explore-card-body">
+        <span class="explore-card-category">Historic Fort</span>
+        <div class="explore-card-title">Shaniwar Wada</div>
+        <div class="explore-card-location">📍 Pune, Maharashtra</div>
+        <div class="explore-card-desc">The legendary palace-fortress of the Maratha Peshwas, founded in 1732. A hauntingly beautiful ruin at the heart of Pune.</div>
+        <button class="explore-card-btn">View Details</button>
+      </div>
+    </div>
+
+    <!-- Gateway of India -->
+    <div class="explore-card" onclick="openModal('gateway')">
+      <img class="explore-card-img"
+           src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Gateway_of_India_2010.jpg/800px-Gateway_of_India_2010.jpg"
+           alt="Gateway of India Mumbai">
+      <div class="explore-card-body">
+        <span class="explore-card-category">Colonial Monument</span>
+        <div class="explore-card-title">Gateway of India</div>
+        <div class="explore-card-location">📍 Mumbai, Maharashtra</div>
+        <div class="explore-card-desc">Mumbai's iconic Indo-Saracenic arch built in 1924 at the water's edge. The last British troops left India through this very gate.</div>
+        <button class="explore-card-btn">View Details</button>
+      </div>
+    </div>
+
+    <!-- Alibag -->
+    <div class="explore-card" onclick="openModal('alibag')">
+      <img class="explore-card-img"
+           src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Alibag_beach.jpg/800px-Alibag_beach.jpg"
+           alt="Alibag Beach">
+      <div class="explore-card-body">
+        <span class="explore-card-category">Coastal Retreat</span>
+        <div class="explore-card-title">Alibag — Konkan Coast</div>
+        <div class="explore-card-location">📍 Raigad District, Maharashtra</div>
+        <div class="explore-card-desc">Palm-fringed beaches, the historic Kolaba Sea Fort, fresh Konkani seafood — just one ferry ride from Mumbai.</div>
+        <button class="explore-card-btn">View Details</button>
+      </div>
+    </div>
+
+    <!-- Ganpatipule -->
+    <div class="explore-card" onclick="openModal('ganpatipule')">
+      <img class="explore-card-img"
+           src="https://www.trawell.in/admin/images/upload/520468440Ganpatipule_Temple.jpg"
+           alt="Ganpatipule Temple">
+      <div class="explore-card-body">
+        <span class="explore-card-category">Beach Temple</span>
+        <div class="explore-card-title">Ganpatipule Mandir</div>
+        <div class="explore-card-location">📍 Ratnagiri District, Maharashtra</div>
+        <div class="explore-card-desc">Maharashtra's only Ganesh temple on a beach — a 400-year-old swayambhu shrine on the pristine Konkan coast with soft white sands and spiritual serenity.</div>
+        <button class="explore-card-btn">View Details</button>
+      </div>
+    </div>
+
+    <!-- Amboli Ghats -->
+    <div class="explore-card" onclick="openModal('amboli')">
+      <img class="explore-card-img"
+           src="https://i.pinimg.com/originals/5e/9c/01/5e9c015f74a49c714cecb50377c08cbe.jpg"
+           alt="Amboli Ghats">
+      <div class="explore-card-body">
+        <span class="explore-card-category">Hill Station</span>
+        <div class="explore-card-title">Amboli Ghats</div>
+        <div class="explore-card-location">📍 Sindhudurg District, Maharashtra</div>
+        <div class="explore-card-desc">A misty hill station at 690m in the Western Ghats — thundering waterfalls, rare biodiversity, 21 hairpin bends, and one of Maharashtra's wettest and most beautiful landscapes.</div>
+        <button class="explore-card-btn">View Details</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBg(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-top">
+      <img id="modal-img" src="" alt="">
+      <div class="modal-top-text">
+        <h2 id="modal-title"></h2>
+        <p id="modal-subtitle"></p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<footer>
+  <div><strong>SafeYatra</strong> — Smart Tourist Safety & Incident Response System</div>
+  <div>A Web Development Project · Proposed for Ministry of Tourism, Government of India</div>
+  <div style="margin-top:8px;">
+    Emergency Helpline: <strong>1800-111-363</strong> &nbsp;|&nbsp;
+    Tourist Police: <strong>1363</strong> &nbsp;|&nbsp;
+    Medical Emergency: <strong>108</strong> &nbsp;|&nbsp;
+    Police: <strong>100</strong>
+  </div>
+  <div style="margin-top:6px; font-size:11px; color:#8fbfa0;">Data references: NCRB · Ministry of Tourism Annual Reports · ASI · MoRTH · incredibleindia.org</div>
+</footer>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+
+<script>
+  // ---------- TAB SWITCHING ----------
+  function showTab(name, clickedBtn) {
+    document.querySelectorAll('.tab-section').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.tab-menu button').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('nav ul li a').forEach(function(a) { a.classList.remove('active'); });
+    document.getElementById('tab-' + name).classList.add('active');
+    if (clickedBtn) { clickedBtn.classList.add('active'); }
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+
+  // ---------- TOAST ----------
+  function showToast(msg) {
+    var toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(function() { toast.style.display = 'none'; }, 3500);
+  }
+
+  // ---------- GENERATE TOURIST ID ----------
+  function generateID() {
+    var name = document.getElementById('f-name').value.trim();
+    var phone = document.getElementById('f-phone').value.trim();
+    var city = document.getElementById('f-city').value;
+    var duration = document.getElementById('f-duration').value;
+    var lang = document.getElementById('f-lang').value;
+    var group = document.getElementById('f-group').value;
+
+    if (!name || !phone || !city) {
+      showToast('⚠️ Please fill in Name, Phone Number and City!');
+      return;
+    }
+
+    var r1 = Math.floor(1000 + Math.random() * 9000);
+    var r2 = Math.floor(1000 + Math.random() * 9000);
+    var idNum = 'SY-' + r1 + '-' + r2;
+    var today = new Date();
+    var dateStr = today.toLocaleDateString('en-IN');
+
+    document.getElementById('id-name').textContent = name.toUpperCase();
+    document.getElementById('id-num').textContent = idNum;
+    document.getElementById('id-city').textContent = city;
+    document.getElementById('id-phone').textContent = phone;
+    document.getElementById('id-issued').textContent = dateStr;
+    document.getElementById('id-dur').textContent = duration;
+    document.getElementById('id-lang').textContent = lang;
+    document.getElementById('id-group').textContent = group;
+
+    document.getElementById('id-output').style.display = 'block';
+    showToast('✅ Tourist ID generated successfully for ' + name + '!');
+    document.getElementById('id-output').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ---------- SOS ----------
+  var sosCount = 0;
+  function triggerSOS() {
+    alert('🆘 SOS ALERT SENT!\n\nYour location has been shared with the nearest police station.\nHelp is on the way. Please stay calm and stay where you are.\n\nFor immediate help call: 100 (Police) or 112 (Emergency)');
+    sosCount++;
+    var el = document.getElementById('m-sos');
+    if (el) { el.textContent = sosCount; }
+    showToast('🆘 SOS Alert sent! Authorities have been notified.');
+  }
+
+  // ---------- REFRESH THREATS ----------
+  function refreshThreats() {
+    // These are realistic ranges based on government data references
+    var items = [
+      { bar: 'bar-crowd', lbl: 'lbl-crowd', min: 65, max: 90 },
+      { bar: 'bar-behavior', lbl: 'lbl-behavior', min: 40, max: 70 },
+      { bar: 'bar-theft', lbl: 'lbl-theft', min: 35, max: 65 },
+      { bar: 'bar-road', lbl: 'lbl-road', min: 55, max: 80 },
+      { bar: 'bar-medical', lbl: 'lbl-medical', min: 20, max: 45 },
+    ];
+    items.forEach(function(item) {
+      var pct = Math.floor(item.min + Math.random() * (item.max - item.min));
+      var level = pct < 35 ? 'Low' : pct < 55 ? 'Moderate' : pct < 75 ? 'High' : 'Critical';
+      var color = pct < 35 ? 'fill-green' : pct < 55 ? 'fill-yellow' : pct < 75 ? 'fill-orange' : 'fill-red';
+      document.getElementById(item.bar).style.width = pct + '%';
+      document.getElementById(item.bar).className = 'progress-fill ' + color;
+      document.getElementById(item.lbl).textContent = level + ' — ' + pct + '%';
+    });
+    showToast('↻ Risk levels updated (simulated)');
+  }
+
+  // ---------- COMPLAINT FORM ----------
+  var complaintCount = 0;
+  function submitComplaint() {
+    var name = document.getElementById('c-name').value.trim();
+    var phone = document.getElementById('c-phone').value.trim();
+    var location = document.getElementById('c-location').value.trim();
+    var type = document.getElementById('c-type').value;
+    var desc = document.getElementById('c-desc').value.trim();
+
+    if (!name || !phone || !location || !type || !desc) {
+      showToast('⚠️ Please fill all required fields in the complaint form!');
+      return;
+    }
+
+    var refNum = 'CMP-' + new Date().getFullYear() + '-' + Math.floor(10000 + Math.random() * 90000);
+    document.getElementById('complaint-ref').textContent = refNum;
+    document.getElementById('complaint-success').classList.add('show');
+
+    complaintCount++;
+    var el = document.getElementById('m-complaints');
+    if (el) { el.textContent = complaintCount; }
+
+    // Add to incident log in dashboard
+    var logContainer = document.getElementById('incident-log-container');
+    logContainer.innerHTML = '';
+    for (var i = 0; i < complaintCount; i++) {
+      var div = document.createElement('div');
+      div.className = 'incident-item';
+      div.innerHTML = '<div class="dot dot-blue"></div>' +
+        '<div class="incident-text">' +
+        '<div class="inc-title">Complaint Filed — ' + type + '</div>' +
+        '<div class="inc-meta">👤 ' + name + ' · 📍 ' + location + ' · Ref: ' + refNum + '</div>' +
+        '</div><span class="badge badge-blue">FILED</span>';
+      logContainer.appendChild(div);
+    }
+
+    // Clear form
+    document.getElementById('c-name').value = '';
+    document.getElementById('c-phone').value = '';
+    document.getElementById('c-location').value = '';
+    document.getElementById('c-type').value = '';
+    document.getElementById('c-desc').value = '';
+    document.getElementById('c-id').value = '';
+
+    showToast('✅ Complaint submitted! Reference: ' + refNum);
+  }
+
+  // ---------- LANGUAGES ----------
+  var languages = [
+    { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+    { code: 'bn', name: 'Bengali', native: 'বাংলা' },
+    { code: 'te', name: 'Telugu', native: 'తెలుగు' },
+    { code: 'mr', name: 'Marathi', native: 'मराठी' },
+    { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+    { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+    { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
+    { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+    { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
+    { code: 'or', name: 'Odia', native: 'ଓଡ଼ିଆ' },
+    { code: 'ur', name: 'Urdu', native: 'اردو' },
+    { code: 'as', name: 'Assamese', native: 'অসমীয়া' },
+    { code: 'en', name: 'English', native: 'English' },
+  ];
+
+  var translations = {
+    hi: { title: 'Hindi — हिन्दी', phrases: [
+      ['Help me!', 'मेरी मदद करो!'],
+      ['I am lost', 'मैं खो गया हूँ'],
+      ['Call the police', 'पुलिस को बुलाओ — 100'],
+      ['I need a doctor', 'मुझे डॉक्टर चाहिए'],
+      ['Where is the hospital?', 'अस्पताल कहाँ है?'],
+      ['I have been robbed', 'मेरा सामान चुरा लिया गया'],
+      ['Emergency!', 'आपातकाल! — 112']
+    ]},
+    bn: { title: 'Bengali — বাংলা', phrases: [
+      ['Help me!', 'আমাকে সাহায্য করুন!'],
+      ['I am lost', 'আমি হারিয়ে গেছি'],
+      ['Call the police', 'পুলিশকে ডাকুন — 100'],
+      ['I need a doctor', 'আমার ডাক্তার দরকার'],
+      ['Where is the hospital?', 'হাসপাতাল কোথায়?'],
+      ['I have been robbed', 'আমার জিনিস চুরি হয়েছে'],
+      ['Emergency!', 'জরুরি অবস্থা! — 112']
+    ]},
+    te: { title: 'Telugu — తెలుగు', phrases: [
+      ['Help me!', 'నాకు సహాయం చేయండి!'],
+      ['I am lost', 'నేను దారి తప్పాను'],
+      ['Call the police', 'పోలీసులను పిలవండి — 100'],
+      ['I need a doctor', 'నాకు వైద్యుడు కావాలి'],
+      ['Where is the hospital?', 'ఆసుపత్రి ఎక్కడ ఉంది?'],
+      ['I have been robbed', 'నా వస్తువులు దొంగిలించబడ్డాయి'],
+      ['Emergency!', 'అత్యవసర! — 112']
+    ]},
+    mr: { title: 'Marathi — मराठी', phrases: [
+      ['Help me!', 'मला मदत करा!'],
+      ['I am lost', 'मी हरवलो आहे'],
+      ['Call the police', 'पोलिसांना बोलवा — 100'],
+      ['I need a doctor', 'मला डॉक्टर हवे आहेत'],
+      ['Where is the hospital?', 'हॉस्पिटल कुठे आहे?'],
+      ['I have been robbed', 'माझ्या वस्तू चोरल्या गेल्या'],
+      ['Emergency!', 'आणीबाणी! — 112']
+    ]},
+    ta: { title: 'Tamil — தமிழ்', phrases: [
+      ['Help me!', 'என்னை உதவுங்கள்!'],
+      ['I am lost', 'நான் தொலைந்துவிட்டேன்'],
+      ['Call the police', 'காவலரை அழையுங்கள் — 100'],
+      ['I need a doctor', 'எனக்கு மருத்துவர் வேண்டும்'],
+      ['Where is the hospital?', 'மருத்துவமனை எங்கே?'],
+      ['I have been robbed', 'என் பொருட்கள் திருடப்பட்டன'],
+      ['Emergency!', 'அவசரநிலை! — 112']
+    ]},
+    gu: { title: 'Gujarati — ગુજરાતી', phrases: [
+      ['Help me!', 'મને મદદ કરો!'],
+      ['I am lost', 'હું ખોવાઈ ગયો છું'],
+      ['Call the police', 'પોલીસ બોલાવો — 100'],
+      ['I need a doctor', 'મને ડૉક્ટરની જરૂર છે'],
+      ['Where is the hospital?', 'હોસ્પિટલ ક્યાં છે?'],
+      ['I have been robbed', 'મારી ચીજ ચોરાઈ ગઈ'],
+      ['Emergency!', 'કટોકટી! — 112']
+    ]},
+    kn: { title: 'Kannada — ಕನ್ನಡ', phrases: [
+      ['Help me!', 'ನನಗೆ ಸಹಾಯ ಮಾಡಿ!'],
+      ['I am lost', 'ನಾನು ದಾರಿ ತಪ್ಪಿದ್ದೇನೆ'],
+      ['Call the police', 'ಪೊಲೀಸ್ ಕರೆಯಿರಿ — 100'],
+      ['I need a doctor', 'ನನಗೆ ವೈದ್ಯರು ಬೇಕು'],
+      ['Where is the hospital?', 'ಆಸ್ಪತ್ರೆ ಎಲ್ಲಿದೆ?'],
+      ['I have been robbed', 'ನನ್ನ ವಸ್ತು ಕದ್ದಿದ್ದಾರೆ'],
+      ['Emergency!', 'ತುರ್ತು! — 112']
+    ]},
+    ml: { title: 'Malayalam — മലയാളം', phrases: [
+      ['Help me!', 'എന്നെ സഹായിക്കൂ!'],
+      ['I am lost', 'ഞാൻ വഴിതെറ്റിപ്പോയി'],
+      ['Call the police', 'പൊലീസിനെ വിളിക്കൂ — 100'],
+      ['I need a doctor', 'എനിക്ക് ഡോക്ടർ വേണം'],
+      ['Where is the hospital?', 'ആശുപത്രി എവിടെയാണ്?'],
+      ['I have been robbed', 'എന്റെ സാധനങ്ങൾ മോഷ്ടിക്കപ്പെട്ടു'],
+      ['Emergency!', 'അടിയന്തരം! — 112']
+    ]},
+    pa: { title: 'Punjabi — ਪੰਜਾਬੀ', phrases: [
+      ['Help me!', 'ਮੇਰੀ ਮਦਦ ਕਰੋ!'],
+      ['I am lost', 'ਮੈਂ ਗੁਆਚ ਗਿਆ ਹਾਂ'],
+      ['Call the police', 'ਪੁਲਿਸ ਨੂੰ ਬੁਲਾਓ — 100'],
+      ['I need a doctor', 'ਮੈਨੂੰ ਡਾਕਟਰ ਦੀ ਲੋੜ ਹੈ'],
+      ['Where is the hospital?', 'ਹਸਪਤਾਲ ਕਿੱਥੇ ਹੈ?'],
+      ['I have been robbed', 'ਮੇਰਾ ਸਾਮਾਨ ਚੋਰੀ ਹੋ ਗਿਆ'],
+      ['Emergency!', 'ਐਮਰਜੈਂਸੀ! — 112']
+    ]},
+    or: { title: 'Odia — ଓଡ଼ିଆ', phrases: [
+      ['Help me!', 'ମୋତେ ସାହାଯ୍ୟ କରନ୍ତୁ!'],
+      ['I am lost', 'ମୁଁ ହଜି ଗଲି'],
+      ['Call the police', 'ପୋଲିସ ଡାକ — 100'],
+      ['I need a doctor', 'ମୋତେ ଡାକ୍ତର ଦରକାର'],
+      ['Where is the hospital?', 'ହସ୍ପିଟାଲ କେଉଁଠି?'],
+      ['I have been robbed', 'ମୋର ଜିନିଷ ଚୋରି ହୋଇଛି'],
+      ['Emergency!', 'ଜରୁରୀ! — 112']
+    ]},
+    ur: { title: 'Urdu — اردو', phrases: [
+      ['Help me!', 'میری مدد کرو!'],
+      ['I am lost', 'میں گم ہو گیا ہوں'],
+      ['Call the police', 'پولیس کو بلاؤ — 100'],
+      ['I need a doctor', 'مجھے ڈاکٹر چاہیے'],
+      ['Where is the hospital?', 'ہسپتال کہاں ہے؟'],
+      ['I have been robbed', 'میرا سامان چرا لیا گیا'],
+      ['Emergency!', 'ایمرجنسی! — 112']
+    ]},
+    as: { title: 'Assamese — অসমীয়া', phrases: [
+      ['Help me!', 'মোক সহায় কৰক!'],
+      ['I am lost', 'মই হেৰাই গৈছো'],
+      ['Call the police', 'আৰক্ষী মাতক — 100'],
+      ['I need a doctor', 'মোৰ চিকিৎসক লাগে'],
+      ['Where is the hospital?', 'চিকিৎসালয় ক\'ত আছে?'],
+      ['I have been robbed', 'মোৰ বস্তু চোৰ হৈছে'],
+      ['Emergency!', 'জৰুৰী! — 112']
+    ]},
+    en: { title: 'English', phrases: [
+      ['Help me!', 'Help me please!'],
+      ['I am lost', 'I am lost. Please help me.'],
+      ['Call the police', 'Please call police — Dial 100'],
+      ['I need a doctor', 'I need a doctor urgently. Call 108.'],
+      ['Where is the hospital?', 'Where is the nearest hospital?'],
+      ['I have been robbed', 'I have been robbed. Please call police.'],
+      ['Emergency!', 'This is an emergency! Dial 112.']
+    ]},
+  };
+
+  function buildLanguageGrid() {
+    var grid = document.getElementById('lang-grid');
+    var html = '';
+    languages.forEach(function(lang) {
+      html += '<div class="lang-btn" onclick="selectLang(\'' + lang.code + '\', this)">';
+      html += '<div class="lang-name">' + lang.name + '</div>';
+      html += '<div class="lang-native">' + lang.native + '</div>';
+      html += '</div>';
+    });
+    grid.innerHTML = html;
+  }
+
+  function selectLang(code, el) {
+    document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
+    el.classList.add('active');
+    var tr = translations[code];
+    if (!tr) return;
+    document.getElementById('trans-title').textContent = '🌐 ' + tr.title + ' — Emergency Phrases';
+    var html = '';
+    tr.phrases.forEach(function(pair) {
+      html += '<div class="phrase-row">';
+      html += '<div class="phrase-en">' + pair[0] + '</div>';
+      html += '<div class="phrase-translated">' + pair[1] + '</div>';
+      html += '</div>';
+    });
+    document.getElementById('trans-phrases').innerHTML = html;
+    showToast('Loaded: ' + tr.title);
+  }
+
+  // Init
+  buildLanguageGrid();
+
+  // ============ EXPLORE MORE — MODAL DATA ============
+  var modalData = {
+
+    'hazur': {
+      title: 'Sachkhand Sri Hazur Sahib',
+      subtitle: 'Nanded, Maharashtra · Sacred Sikh Shrine',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Hazur_Sahib_Gurudwara%2C_Nanded.jpg/800px-Hazur_Sahib_Gurudwara%2C_Nanded.jpg',
+      chips: [
+        { label: 'Location', value: 'Nanded, Maharashtra' },
+        { label: 'Type', value: 'Religious Site — Sikh Takht' },
+        { label: 'Timings', value: 'Open 24 Hours' },
+        { label: 'Entry Fee', value: 'Free for All' },
+        { label: 'Best Time', value: 'October – March' },
+        { label: 'How to Reach', value: 'Nanded Railway Station (3 km)' }
+      ],
+      desc: 'Sachkhand Sri Hazur Sahib is one of the five Takhts (supreme seats of authority) of Sikhism. It marks the sacred spot where the tenth Sikh Guru, Guru Gobind Singh Ji, attained Sachkhand in 1708. The golden-domed shrine stands on the southern bank of the Godavari River and welcomes pilgrims from across the world 24 hours a day. A free langar (community kitchen) serves meals to all visitors, regardless of religion.',
+      highlights: [
+        'One of the five Takhts of Sikhism — among the holiest Sikh shrines in the world',
+        'Guru Gobind Singh Ji transferred Guruship to Sri Guru Granth Sahib Ji here in 1708',
+        'Current structure built under patronage of Maharaja Ranjit Singh (19th century)',
+        'Free community langar open 24/7 for visitors of all faiths',
+        'Gurpurab celebration draws hundreds of thousands of pilgrims annually'
+      ],
+      safety: '🛡️ <strong>Safety Tip for Hazur Sahib:</strong> Dress modestly (cover head with cloth — available at entrance). Remove shoes before entering. Store valuables in the free locker facility. The area around the shrine is generally very peaceful and safe, but be cautious of pickpockets during large festivals like Gurpurab. Emergency contact: Nanded Police — 02462-231100.'
+    },
+
+    'ajanta': {
+      title: 'Ajanta & Ellora Caves',
+      subtitle: 'Aurangabad District, Maharashtra · UNESCO World Heritage Site',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Ellora_cave_16_Kailasha_temple.jpg/800px-Ellora_cave_16_Kailasha_temple.jpg',
+      chips: [
+        { label: 'Location', value: 'Aurangabad District, MH' },
+        { label: 'UNESCO Status', value: 'World Heritage Site' },
+        { label: 'Timings', value: '9:00 AM – 5:30 PM (Tue–Sun)' },
+        { label: 'Entry Fee', value: '₹40 (Indians) · ₹600 (Foreign)' },
+        { label: 'Best Time', value: 'November – March' },
+        { label: 'Managed By', value: 'ASI (Archaeological Survey of India)' }
+      ],
+      desc: 'The Ajanta and Ellora cave complexes are among the greatest archaeological treasures on earth. Ajanta (30 Buddhist caves, 2nd century BCE – 6th century CE) contains some of the finest ancient murals and sculptures in the world. Ellora (34 caves — Buddhist, Hindu and Jain) features the breathtaking Kailasa Temple (Cave 16), the world\'s largest monolithic rock-cut structure, carved top-down from a single basalt cliff by an estimated 7,000 labourers over 150 years.',
+      highlights: [
+        'Kailasa Temple (Ellora Cave 16) — world\'s largest single-rock excavation',
+        'Ajanta murals are UNESCO-recognised masterpieces of ancient Buddhist art',
+        '34 Ellora caves span three different religions: Buddhism, Hinduism and Jainism',
+        'Ajanta caves closed on Mondays; Ellora caves closed on Tuesdays',
+        'Both sites are about 100 km from Aurangabad city (Chhatrapati Sambhajinagar)'
+      ],
+      safety: '🛡️ <strong>Safety Tip for Ajanta & Ellora:</strong> Wear comfortable, closed-toe shoes — cave floors can be uneven and slippery. Carry drinking water (kiosks available outside). Hire an official ASI-licensed guide at the entrance — avoid touts. Do not touch the ancient murals or carvings. Keep children supervised near cliff edges. Emergency: ASI Site Office — 0240-2381382.'
+    },
+
+    'shaniwar': {
+      title: 'Shaniwar Wada',
+      subtitle: 'Pune, Maharashtra · Historic Maratha Palace-Fortress · Founded 1732',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Shaniwar_Wada_Fort_%281%29.jpg/800px-Shaniwar_Wada_Fort_%281%29.jpg',
+      chips: [
+        { label: 'Location', value: 'Budhwar Peth, Pune' },
+        { label: 'Built By', value: 'Peshwa Baji Rao I (1732)' },
+        { label: 'Timings', value: '8:00 AM – 6:30 PM, All Days' },
+        { label: 'Entry Fee', value: '₹5 (Indians) · ₹125 (Foreign)' },
+        { label: 'Light & Sound', value: 'Evening show — ₹25–₹50' },
+        { label: 'Nearest Metro', value: 'Shivajinagar Metro Station' }
+      ],
+      desc: 'Shaniwar Wada was the grand palace-fortress of the Peshwas — the prime ministers who effectively ruled the mighty Maratha Empire from Pune. Built in 1732, the original seven-storey palace covered 625,000 sq ft and housed the entire Peshwa court. It features five massive gates, ornate fountains, and beautifully carved teak doors. A devastating fire in 1828 destroyed the wooden structures, leaving the imposing stone walls and gates — which still stand today as one of Pune\'s most visited landmarks.',
+      highlights: [
+        'Five monumental gates: Delhi, Mastani, Khidki, Ganesh & Narayan Darwaza',
+        'Delhi Darwaza studded with iron spikes to prevent elephant attacks',
+        'Site of the 1773 assassination of Narayanrao Peshwa — a dark historical legend',
+        'Spectacular Light & Sound show every evening in Marathi and English',
+        'Located in the heart of old Pune — combine with Dagdusheth Halwai Temple visit'
+      ],
+      safety: '🛡️ <strong>Safety Tip for Shaniwar Wada:</strong> The site is very crowded on weekends and public holidays — arrive early (before 10 AM) to avoid crowds. Keep your bag in front of you in busy areas. The evening Light & Sound show area can get dark — carry a small torch. For any assistance: Pune Tourism Police — 020-26127480. Nearest police station: Shivajinagar Police Station.'
+    },
+
+    'gateway': {
+      title: 'Gateway of India',
+      subtitle: 'Mumbai, Maharashtra · Colonial Monument · Built 1924',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Gateway_of_India_2010.jpg/800px-Gateway_of_India_2010.jpg',
+      chips: [
+        { label: 'Location', value: 'Apollo Bunder, Colaba, Mumbai' },
+        { label: 'Built', value: '1924 (Indo-Saracenic Style)' },
+        { label: 'Timings', value: 'Open 24 Hours' },
+        { label: 'Entry Fee', value: 'Free Entry' },
+        { label: 'Nearby', value: 'Taj Mahal Palace Hotel, Elephanta Island' },
+        { label: 'How to Reach', value: 'CST / Churchgate Railway + taxi' }
+      ],
+      desc: 'The Gateway of India is Mumbai\'s most recognisable landmark — a grand 26-metre Indo-Saracenic arch built to commemorate the visit of King George V in 1911. Completed in 1924 and facing the Arabian Sea at Apollo Bunder, it was through this very arch that the last British troops marched out of India in 1948, marking the end of the British Raj. Today it is a bustling waterfront landmark surrounded by street vendors, ferry services to Elephanta Island, and the iconic Taj Mahal Palace Hotel.',
+      highlights: [
+        '26-metre basalt arch in Indo-Saracenic style — combines Hindu, Muslim and Western architecture',
+        'Last British troops left India through this gate in February 1948',
+        'Ferries to Elephanta Island (UNESCO Heritage site) depart from here',
+        'Adjacent to the iconic Taj Mahal Palace Hotel (built 1903)',
+        'Best viewed at sunrise and after sunset when beautifully illuminated'
+      ],
+      safety: '🛡️ <strong>Safety Tip for Gateway of India:</strong> This is a very high-footfall tourist zone — pickpocketing is common. Keep bags zipped and wallets in front pockets. Be cautious of touts offering "boat rides" — only use licensed Maharashtra Tourism ferry services. Avoid unknown strangers offering guide services. The area is patrolled by police, but remain alert especially after dark. Mumbai Police: 100. Colaba Police Station: 022-22021855.'
+    },
+
+    'alibag': {
+      title: 'Alibag — Konkan Coast',
+      subtitle: 'Raigad District, Maharashtra · Beach & Coastal Heritage',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Alibag_beach.jpg/800px-Alibag_beach.jpg',
+      chips: [
+        { label: 'Location', value: 'Raigad District, Konkan' },
+        { label: 'Type', value: 'Beach Destination' },
+        { label: 'Distance from Mumbai', value: '~95 km by road; 1 hr by ferry' },
+        { label: 'Best Time', value: 'October – February' },
+        { label: 'Known For', value: 'Kolaba Sea Fort, beaches, seafood' },
+        { label: 'Ferry From', value: 'Gateway of India, Mumbai' }
+      ],
+      desc: 'Alibag is the sun-drenched coastal gem of Maharashtra\'s Konkan region — a favourite weekend escape from Mumbai. Famous for its clean palm-fringed beaches (Alibag Beach, Kashid Beach, Nagaon Beach), the historic Kolaba Sea Fort (accessible by foot at low tide), fresh Konkani seafood, and a relaxed, unhurried pace of life. The fastest way to get there is the one-hour ferry ride from Mumbai\'s Gateway of India — a scenic journey across Mumbai Harbour.',
+      highlights: [
+        'Kolaba Sea Fort — a 17th-century Maratha sea fort reachable by foot at low tide',
+        'Multiple beaches: Alibag, Kashid, Nagaon, Varsoli — each with distinct character',
+        'Famous for fresh Konkani seafood: surmai, pomfret, prawns, kolambi',
+        '1-hour ferry from Gateway of India (Mumbai) — the most scenic way to arrive',
+        'Popular beach activities: horse riding, camel rides, jet skiing, beach volleyball'
+      ],
+      safety: '🛡️ <strong>Safety Tip for Alibag:</strong> Check tidal timings before walking to Kolaba Fort — the path gets submerged at high tide and can be dangerous. Never swim at unmarked or unguarded beach spots. Be careful of strong undertows at Kashid and Nagaon beaches, especially in monsoon (June–September). Avoid booking through unknown travel agents — use government-registered boat services. Raigad Police: 02141-222201. Ambulance: 108.'
+    },
+
+    'mh-index': {
+      title: 'Maharashtra Heritage — 5 Destinations',
+      subtitle: 'Complete guide to five iconic places across Maharashtra',
+      img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Ellora_cave_16_Kailasha_temple.jpg/800px-Ellora_cave_16_Kailasha_temple.jpg',
+      isIndex: true
+    },
+
+    'ganpatipule': {
+      title: 'Ganpatipule Mandir',
+      subtitle: 'Ratnagiri District, Maharashtra · Beach Temple · 400+ Years Old',
+      img: 'https://www.trawell.in/admin/images/upload/520468440Ganpatipule_Temple.jpg',
+      chips: [
+        { label: 'Location', value: 'Ganpatipule, Ratnagiri Dist.' },
+        { label: 'Type', value: 'Swayambhu Ganesha Temple' },
+        { label: 'Morning Timings', value: '5:00 AM – 12:00 PM' },
+        { label: 'Evening Timings', value: '4:00 PM – 9:00 PM' },
+        { label: 'Entry Fee', value: 'Free Entry' },
+        { label: 'Nearest Railway', value: 'Ratnagiri Station (32 km)' }
+      ],
+      desc: 'Ganpatipule is home to one of Maharashtra\'s most revered Ganesha shrines — a 400-year-old swayambhu (self-manifested) temple where the idol of Lord Ganesha is said to have emerged from the earth. Uniquely, this is the only Ganesh temple in Maharashtra situated directly on a beach, with the sound of Arabian Sea waves audible during prayers. The idol faces east (most Ganesh idols face north) and the trunk turns left — a rare and especially sacred form. The beach itself is crescent-shaped, clean and calm, with shallow waters and soft white sand. Aarti at 7:30 AM and 7:30 PM is a deeply spiritual experience.',
+      highlights: [
+        'Only Ganesha temple on a beach in Maharashtra — idol faces the Arabian Sea',
+        '400-year-old swayambhu (self-manifested) idol — extremely rare east-facing form',
+        'Aarti at 7:30 AM and 7:30 PM — must-attend for devotees',
+        'MTDC beach resort right next to the temple for comfortable stays',
+        'Famous for Ganpati Special Modaks and authentic Malvani seafood nearby',
+        'Maghi Ganesh Jayanti and Ganesh Chaturthi draw thousands of pilgrims'
+      ],
+      safety: '🛡️ <strong>Safety Tip for Ganpatipule:</strong> The beach is generally safe for swimming — waters are shallow and calm. However, avoid swimming during monsoon (July–September) when waves are strong. Carry valuables in a waterproof pouch near the beach. The temple gets very crowded during Ganesh Chaturthi — keep children close and be aware of pickpockets in queues. Use only MSRTC buses or licensed taxis from Ratnagiri. Emergency: Ratnagiri Police — 02352-222100. Ambulance: 108.'
+    },
+
+    'amboli': {
+      title: 'Amboli Ghats',
+      subtitle: 'Sindhudurg District, Maharashtra · Western Ghats · 690m Altitude',
+      img: 'https://i.pinimg.com/originals/5e/9c/01/5e9c015f74a49c714cecb50377c08cbe.jpg',
+      chips: [
+        { label: 'Location', value: 'Sindhudurg District, MH' },
+        { label: 'Altitude', value: '690 metres (Sahyadri Range)' },
+        { label: 'Best Season', value: 'Monsoon (Jun–Sep) & Winter' },
+        { label: 'Nearest Town', value: 'Sawantwadi (25 km)' },
+        { label: 'Nearest Airport', value: 'Goa Dabolim (85 km)' },
+        { label: 'UNESCO Status', value: 'Part of Western Ghats WHS' }
+      ],
+      desc: 'Amboli is a serene hill station at 690m in the Sahyadri range of the Western Ghats — a UNESCO World Heritage Site — in Sindhudurg district. It is the last hill station before the Konkan coastal plains, and receives among the highest rainfall in Maharashtra, creating a lush, misty, waterfall-filled landscape. The ghat road is a scenic adventure with 21 hairpin bends and dense forests. Key attractions include Shirgaonkar Falls (200ft plunge), Nangarta Falls, Sunset Point (with views of the Arabian Sea), and the ancient Hiranyakeshi Temple. The region is also a biodiversity hotspot — home to rare butterflies, endemic frog species, and hundreds of birds.',
+      highlights: [
+        'Shirgaonkar Falls — 200ft majestic waterfall, short trek to the base',
+        'Sunset Point — watch the sun sink into the Arabian Sea on clear evenings',
+        'Home to the rare Amboli Bush Frog — found nowhere else on earth',
+        '21 hairpin bends on the ghat road — a thrilling self-drive route',
+        'Ancient Hiranyakeshi Temple — origin of the Hiranyakeshi River',
+        'Part of the Western Ghats UNESCO World Heritage biodiversity hotspot'
+      ],
+      safety: '🛡️ <strong>Safety Tip for Amboli Ghats:</strong> During heavy monsoon (July–August), ghat roads can be slippery and visibility very low — drive slowly and use fog lights. Never stand at waterfall edges — rocks are extremely slippery. Always check road and landslide alerts from the Sindhudurg District Administration before travelling. Carry raincoat and warm layers even in October. Camping in forest areas requires prior Forest Department permit. Do not litter — Amboli is a fragile ecosystem. Emergency: Forest Dept — +91 2363 123 456. Sindhudurg Police: 02362-228400. Ambulance: 108.'
+    }
+
+  };
+
+  // ---- Open Modal ----
+  function openModal(key) {
+    var d = modalData[key];
+    if (!d) return;
+
+    document.getElementById('modal-img').src = d.img;
+    document.getElementById('modal-img').alt = d.title;
+    document.getElementById('modal-title').textContent = d.title;
+    document.getElementById('modal-subtitle').textContent = d.subtitle;
+
+    var body = document.getElementById('modal-body');
+
+    if (d.isIndex) {
+      // Show mini-cards for all 5 destinations
+      var html = '<p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">Maharashtra is home to some of India\'s most extraordinary heritage sites — spanning ancient caves, Maratha fortresses, Sikh pilgrimages, colonial monuments and pristine coastlines. Click any destination below to explore it in detail.</p>';
+      html += '<div class="mh-grid">';
+      var destinations = ['hazur','ajanta','shaniwar','gateway','alibag'];
+      var labels = [
+        ['Sachkhand Sri Hazur Sahib','Nanded · Sacred Site','https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Hazur_Sahib_Gurudwara%2C_Nanded.jpg/400px-Hazur_Sahib_Gurudwara%2C_Nanded.jpg'],
+        ['Ajanta & Ellora Caves','Aurangabad · UNESCO','https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Ellora_cave_16_Kailasha_temple.jpg/400px-Ellora_cave_16_Kailasha_temple.jpg'],
+        ['Shaniwar Wada','Pune · Historic Fort','https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Shaniwar_Wada_Fort_%281%29.jpg/400px-Shaniwar_Wada_Fort_%281%29.jpg'],
+        ['Gateway of India','Mumbai · Monument','https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Gateway_of_India_2010.jpg/400px-Gateway_of_India_2010.jpg'],
+        ['Alibag — Konkan Coast','Raigad · Beach','https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Alibag_beach.jpg/400px-Alibag_beach.jpg']
+      ];
+      for (var i = 0; i < destinations.length; i++) {
+        var dest = destinations[i];
+        var lbl = labels[i];
+        html += '<div class="mh-mini-card" onclick="openModal(\'' + dest + '\')">';
+        html += '<img src="' + lbl[2] + '" alt="' + lbl[0] + '">';
+        html += '<div class="mh-mini-card-body"><strong>' + lbl[0] + '</strong><span>' + lbl[1] + '</span></div>';
+        html += '</div>';
+      }
+      html += '</div>';
+      body.innerHTML = html;
+
+    } else {
+      // Standard destination modal
+      var html = '';
+
+      // Info chips
+      html += '<div class="modal-info-row">';
+      d.chips.forEach(function(c) {
+        html += '<div class="modal-info-chip"><strong>' + c.label + '</strong>' + c.value + '</div>';
+      });
+      html += '</div>';
+
+      // Description
+      html += '<p class="modal-desc">' + d.desc + '</p>';
+
+      // Highlights
+      html += '<div class="modal-highlights"><h4>✨ Key Highlights</h4><ul>';
+      d.highlights.forEach(function(h) {
+        html += '<li>' + h + '</li>';
+      });
+      html += '</ul></div>';
+
+      // Safety tip
+      html += '<div class="modal-safety-tip">🛡️ ' + d.safety.replace('🛡️ ','') + '</div>';
+
+      body.innerHTML = html;
+    }
+
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnBg(event) {
+    if (event.target === document.getElementById('modal-overlay')) {
+      closeModal();
+    }
+  }
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+</body>
+</html>
